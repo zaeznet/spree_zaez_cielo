@@ -1,4 +1,4 @@
-Spree Cielo
+Spree Cielo [![Build Status](https://travis-ci.org/zaeznet/spree_zaez_cielo.svg?branch=master)](https://travis-ci.org/zaeznet/spree_zaez_cielo)
 ==============
 
 This gem implements some funcionalities of Cielo to Spree Commerce.
@@ -68,4 +68,4 @@ Simply add this require statement to your spec_helper:
 require 'spree_zaez_cielo/factories'
 ```
 
-Copyright (c) 2015 [name of extension creator], released under the New BSD License
+Copyright (c) 2015 Zaez Inovação Digital, released under the New BSD License
