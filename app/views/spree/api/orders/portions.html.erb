@@ -1,0 +1,14 @@
+<%= image_tag "credit_cards/icons/#{@cc_type}.png", id: "img_#{@cc_type}", class: 'pull-right' %>
+<%= label_tag(:cielo_card, Spree.t(:cielo_card_title, card: Spree.t("cielo_#{@cc_type}"))) + tag(:br) %>
+<% @portions.each do |item| %>
+    <%= label_tag "portion_#{item[:portion]}" do %>
+        <%= radio_button_tag "#{@prefix}portions", item[:portion], item[:portion] == 1,
+                             'data-payment' => item[:total]  %>
+        <%= "#{Spree.t(:cielo_portions, times: item[:portion], value: item[:value])} #{Spree.t(item[:tax_message])}" %>
+    <% end %>
+    <%= tag(:br) %>
+<% end %>
+<% if @show_tax_value == true %>
+    <%= tag(:br) %>
+    <%= content_tag :span, Spree.t(:cielo_tax_message, tax: @tax), style: 'font-size: smaller;' %>
+<% end %>

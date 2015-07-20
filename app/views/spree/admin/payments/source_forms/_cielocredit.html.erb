@@ -1,0 +1,38 @@
+<div class="well clearfix">
+  <% param_prefix = "payment_source[#{payment_method.id}]" %>
+
+  <p class="field">
+    <%= label_tag "name_on_card_#{payment_method.id}", Spree.t(:name_on_card) %><span class="required">*</span><br />
+    <%= text_field_tag "#{param_prefix}[name]", "#{@order.billing_firstname} #{@order.billing_lastname}", { id: "name_on_card_#{payment_method.id}", :class => 'form-control required'} %>
+  </p>
+
+  <p class="field" data-hook="card_number">
+    <%= label_tag 'card_number', Spree.t(:card_number) %><span class="required">*</span><br />
+    <% options_hash = Rails.env.production? ? {:autocomplete => 'off'} : {} %>
+    <%= text_field_tag "#{param_prefix}[number]", '', options_hash.merge(:id => 'cielo_card_number', :class => 'form-control required cardNumber', :size => 19, :maxlength => 19, :autocomplete => 'off') %>
+    &nbsp;
+    <span id="cielo_unrecognized" style="display:none;" class="error"><%= Spree.t(:unrecognized_card_type) %></span>
+  </p>
+  <div class="row">
+    <div class="col-md-8 field" data-hook="card_expiration">
+      <%= label_tag "card_expiry", Spree.t(:expiration) %><span class="required">*</span><br />
+      <%= text_field_tag "#{param_prefix}[expiry]", '', :id => 'card_expiry', :class => 'form-control required cardExpiry', :placeholder => 'MM / YY' %>
+    </div>
+    <div class="col-md-4 field" data-hook="card_code">
+      <%= label_tag 'card_code', Spree.t(:card_code) %><span class="required">*</span><br />
+      <%= text_field_tag "#{param_prefix}[verification_value]", '', options_hash.merge(:id => 'card_code', :class => 'form-control required cardCode', :size => 5) %>
+      <%= link_to "(#{Spree.t(:what_is_this)})", spree.content_path('cvv'), :target => '_blank', 'data-hook' => 'cvv_link', :id => 'cvv_link' %>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-12" id="cielo_portion">
+    </div>
+  </div>
+
+  <%= hidden_field_tag 'order[payments_attributes][][portions]', '1', :id => 'payment_portions' %>
+  <%= hidden_field_tag "#{param_prefix}[cc_type]", '', :id => 'cielo_credit_cc_type' %>
+</div>
+
+<script type="text/javascript">
+    new window.CieloCredit({payment_method_id: <%= payment_method.id %>});
+</script>

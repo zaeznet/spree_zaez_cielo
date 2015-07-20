@@ -1,0 +1,62 @@
+en:
+  cielo_settings: Cielo Settings
+  spree:
+    cielo_settings: Cielo Settings
+    afiliation_key: Afiliation Key
+    token: Token
+    test_mode: Test Mode
+    minimum_value: Minimum Value per Portion
+    portion_without_tax: Number of Portion without Tax
+    tax_value: Tax value per Month
+    portions: Portions
+    cielo_cards: Cards
+    cielo_card: Card
+    cielo_credit_cards: Credit Cards
+    cielo_debt_cards: Debt Cards
+    portion_number: Max Portion Number
+    cielo_enable: Enable
+    product_value: Portion Type
+    product_value_2: Company
+    product_value_3: Credit Card Operator
+    soft_descriptor: Soft Descriptor (only for Visa and Mastercard)
+    generate_token: Generate Token (replace the credit card data in transactions)
+    cielo_visaelectron: Visa Electron
+    cielo_visa: Visa
+    cielo_master: Mastercard
+    cielo_maestro: Maestro
+    cielo_diners: Diners
+    cielo_discover: Discover
+    cielo_elo: Elo
+    cielo_amex: American Express
+    cielo_american_express: American Express
+    cielo_jcb: JCB
+    cielo_portions: "%{times}x of %{value}"
+    cielo_without_tax: without tax.
+    cielo_with_tax: with tax.
+    cielo_tax_message: "Tax of %{tax}% per month."
+    cielo_card_title: "Portions to %{card} card"
+    cielo_authorize: Authorize
+    quantity_portions: "Quantity of portions: %{portions}x"
+    cielo:
+      messages:
+        purchase_success: "Cielo: transaction purchased successfully"
+        purchase_fail: "Cielo: Permission denied"
+        purchase_rescue: "Cielo: Error when try purchase"
+        authorize_success: "Cielo: transaction authorized successfully"
+        authorize_fail: "Cielo: Permission denied"
+        authorize_rescue: "Cielo: Error when try authorize"
+        capture_success: "Cielo: captured successfully"
+        capture_rescue: "Cielo: Error when try capture"
+        void_success: "Cielo: Voided successfully"
+        void_rescue: "Cielo: Error when try void"
+        create_rescue: "Cielo: Error when try create the transaction"
+        invalid_message: "Cielo: The message is invalid. Verify the information and try again."
+        invalid_portions: "Cielo: The number of portions is required"
+    errors:
+      cielo_card_fail: "The card is not supported. The available cards are:"
+      cielo_unavailable_credit_card: "The credit card is not supported."
+      invalid_guest_token: "The guest token passed is invalid!"
+  activerecord:
+    attributes:
+      spree/payment:
+        portions: Portions

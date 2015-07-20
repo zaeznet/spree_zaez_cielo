@@ -1,0 +1,4 @@
+<!-- insert_bottom "#existing_cards" -->
+<p class="form-group" id="portions_existing_cards">
+</p>
+<%= hidden_field_tag 'has_cielo_credit', has_cielo_credit(@payment_sources), id: 'has_cielo_credit' %>

@@ -1,0 +1,40 @@
+<div class="well clearfix">
+  <% param_prefix = "payment_source[#{payment_method.id}]" %>
+
+  <p class="field">
+    <%= label_tag 'cielo_debt_name', Spree.t(:name_on_card) %><span class="required">*</span><br />
+    <%= text_field_tag "#{param_prefix}[name]", "#{@order.billing_firstname} #{@order.billing_lastname}", { id: 'cielo_debt_name', :class => 'form-control required'} %>
+  </p>
+
+  <p class="field" data-hook="card_number">
+    <%= label_tag 'card_number', Spree.t(:card_number) %><span class="required">*</span><br />
+    <% options_hash = Rails.env.production? ? {:autocomplete => 'off'} : {} %>
+    <%= text_field_tag "#{param_prefix}[number]", '', options_hash.merge(:id => 'cielo_debt_number', :class => 'form-control required cardNumber', :size => 19, :maxlength => 19, :autocomplete => 'off') %>
+    &nbsp;
+    <span id="cielo_debt_unrecognized" style="display:none;" class="error"><%= Spree.t(:unrecognized_card_type) %></span>
+  </p>
+  <div class="row">
+    <div class="col-md-8 field" data-hook="card_expiration">
+      <%= label_tag "card_expiry", Spree.t(:expiration) %><span class="required">*</span><br />
+      <%= text_field_tag "#{param_prefix}[expiry]", '', :id => 'cielo_debt_expiry', :class => 'form-control required cardExpiry', :placeholder => 'MM / YY' %>
+    </div>
+    <div class="col-md-4 field" data-hook="card_code">
+      <%= label_tag 'cielo_debt_code', Spree.t(:card_code) %><span class="required">*</span><br />
+      <%= text_field_tag "#{param_prefix}[verification_value]", '', options_hash.merge(:id => 'cielo_debt_code', :class => 'form-control required cardCode', :size => 5) %>
+      <%= link_to "(#{Spree.t(:what_is_this)})", spree.content_path('cvv'), :target => '_blank', 'data-hook' => 'cvv_link', :id => 'cvv_link' %>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-12" id="cielo_debt_message">
+    </div>
+  </div>
+  <%= hidden_field_tag "#{param_prefix}[cc_type]", '', :id => 'cielo_debt_cc_type', :class => 'ccType' %>
+
+  <div class="text-right" data-hook="cielo_debt_buttons">
+    <%= submit_tag Spree.t(:cielo_authorize), class: 'btn btn-lg btn-success primary', id: 'cielo_debt_authorize' %>
+  </div>
+</div>
+
+<script type="text/javascript">
+    new window.CieloDebt({payment_method_id: <%= payment_method.id %>});
+</script>

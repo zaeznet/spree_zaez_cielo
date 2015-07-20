@@ -1,0 +1,123 @@
+<%= render :partial => 'spree/admin/shared/sub_menu/configuration' %>
+
+<% content_for :page_title do %>
+    <%= Spree.t(:cielo_settings) %>
+<% end %>
+
+<%= form_tag admin_cielo_settings_path, :method => :put  do |form| %>
+    <div id="cielo_preferences" data-hook="cielo_preferences" xmlns="http://www.w3.org/1999/html">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h1 class="panel-title">
+            <%= Spree.t(:settings) %>
+          </h1>
+        </div>
+        <div class="panel-body">
+          <div class="row">
+            <div class="col-sm-6">
+              <%= label_tag(:afiliation_key, Spree.t(:afiliation_key) + ': ') + tag(:br) %>
+              <%= text_field_tag :afiliation_key, @config.afiliation_key, class: 'form-control' %>
+            </div>
+            <div class="col-sm-6">
+              <%= label_tag(:token, Spree.t(:token) + ': ') + tag(:br) %>
+              <%= text_field_tag :token, @config.token, class: 'form-control' %>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-12">
+              <%= check_box_tag :test_mode, true, @config.test_mode %>
+              <%= label_tag(:test_mode) %>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-4">
+              <%= label_tag(:minimum_value, Spree.t(:minimum_value) + ': ') + tag(:br) %>
+              <%= text_field_tag :minimum_value, @config.minimum_value, class: 'form-control' %>
+            </div>
+            <div class="col-sm-4">
+              <%= label_tag(:portion_without_tax, Spree.t(:portion_without_tax) + ': ') + tag(:br) %>
+              <%= number_field_tag :portion_without_tax, @config.portion_without_tax, class: 'form-control' %>
+            </div>
+            <div class="col-sm-4">
+              <%= label_tag(:tax_value, Spree.t(:tax_value) + ': ') + tag(:br) %>
+              <%= text_field_tag :tax_value, @config.tax_value, class: 'form-control' %>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm-4">
+              <%= label_tag(:soft_descriptor, Spree.t(:soft_descriptor) + ': ') + tag(:br) %>
+              <%= text_field_tag :soft_descriptor, @config.soft_descriptor, class: 'form-control', size: 13, maxlength: 13 %>
+            </div>
+            <div class="col-sm-4">
+              <%= label_tag(:product_value, Spree.t(:product_value) + ': ') + tag(:br) %>
+              <%= radio_button_tag :product_value, '2', @config.product_value == '2' %>
+              <%= label_tag :product_value_2, Spree.t(:product_value_2)  %>
+              <%= radio_button_tag :product_value, '3', @config.product_value == '3' %>
+              <%= label_tag :product_value_3, Spree.t(:product_value_3) %>
+            </div>
+            <div class="col-sm-4">
+              <%= label_tag(:generate_token, Spree.t(:generate_token) + ': ') + tag(:br) %>
+              <%= radio_button_tag :generate_token, true, @config.generate_token %>
+              <%= label_tag :generate_token_true, Spree.t(:say_yes)  %>
+              <%= radio_button_tag :generate_token, false, !@config.generate_token %>
+              <%= label_tag :generate_token_false, Spree.t(:say_no) %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="cielo_cards" data-hook="cielo_cards">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h1 class="panel-title">
+            <%= Spree.t(:cielo_cards) %>
+          </h1>
+        </div>
+        <div class="panel-body">
+          <table class="table table-bordered" id="cielo_debt_cards">
+            <thead data-hook="cielo_debt_cards_header">
+            <th><%= Spree.t(:cielo_debt_cards) %></th>
+            <th><%= Spree.t(:state) %></th>
+            </thead>
+            <tbody data-hook="cielo_debt_cards_body">
+            <% @debt_cards.each do |card| %>
+                <tr>
+                  <td>
+                    <%= label_tag "cielo_#{card}".to_sym, Spree.t("cielo_#{card}") %>
+                  </td>
+                  <td>
+                    <%= check_box_tag 'debt_cards[]', card, @config.debt_cards.include?(card.to_s), id: "debt_#{card}_state" %>
+                    <%= label_tag :cielo_enable, Spree.t(:cielo_enable) %>
+                  </td>
+                </tr>
+            <% end %>
+            </tbody>
+          </table>
+          <table class="table table-bordered" id="cielo_credit_cards">
+            <thead data-hook="cielo_credit_cards_header">
+              <th><%= Spree.t(:cielo_credit_cards) %></th>
+              <th><%= Spree.t(:state) %></th>
+              <th width="35%"><%= Spree.t(:portion_number) %></th>
+            </thead>
+            <tbody data-hook="cielo_credit_cards_body">
+              <% @credit_cards.each do |card| %>
+                <tr>
+                  <td>
+                    <%= label_tag "cielo_#{card}".to_sym, Spree.t("cielo_#{card}") %>
+                    <%= hidden_field_tag 'credit_cards[][name]', card %>
+                  </td>
+                  <td>
+                    <%= check_box_tag 'credit_cards[][state]', true, @config.credit_cards.has_key?(card.to_s), id: "credit_#{card}_state" %>
+                    <%= label_tag :cielo_enable, Spree.t(:cielo_enable) %>
+                  </td>
+                  <td><%= number_field_tag 'credit_cards[][portion]', @config.credit_cards[card.to_s],
+                                           class: 'form-control', id: "#{card}_portion" %></td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <%= render partial: 'spree/admin/shared/edit_resource_links', locals: { collection_url: edit_admin_cielo_settings_url } %>
+<% end %>

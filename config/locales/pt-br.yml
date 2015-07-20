@@ -1,0 +1,62 @@
+pt-BR:
+  cielo_settings: Configuracões Cielo
+  spree:
+    cielo_settings: Configurações Cielo
+    afiliation_key: Chave de Afiliação
+    token: Token
+    test_mode: Modo de Teste
+    minimum_value: Valor Mínimo por Parcela
+    portion_without_tax: Número Máximo de Parcelas sem Juros
+    tax_value: Valor do Juros
+    portions: Parcelas
+    cielo_cards: Bandeiras
+    cielo_card: Bandeira
+    cielo_credit_cards: Cartões de Crédito
+    cielo_debt_cards: Cartões de Débito
+    portion_number: Número Máximo de Parcelas
+    product_value: Tipo de Parcelamento
+    product_value_2: Parcelamento pela Loja
+    product_value_3: Parcelamento pela Administradora
+    cielo_enable: Habilitado
+    soft_descriptor: Soft Descriptor (apenas para Visa e Mastercard)
+    generate_token: Gera token (substitui as informações do cartão)
+    cielo_visaelectron: Visa Electron
+    cielo_visa: Visa
+    cielo_master: Mastercard
+    cielo_maestro: Mastercard Maestro
+    cielo_diners: Diners
+    cielo_discover: Discover
+    cielo_elo: Elo
+    cielo_amex: American Express
+    cielo_american_express: American Express
+    cielo_jcb: JCB
+    cielo_portions: "%{times}x de %{value}"
+    cielo_without_tax: sem juros.
+    cielo_with_tax: com juros.
+    cielo_tax_message: "Juros de %{tax}% ao mês."
+    cielo_card_title: "Parcelas para o cartão %{card}"
+    cielo_authorize: Autorizar
+    quantity_portions: "Quantidade de parcelas: %{portions}x"
+    cielo:
+      messages:
+        purchase_success: "Cielo: pedido processado com sucesso!"
+        purchase_fail: "Cielo: Autorização negada"
+        purchase_rescue: "Cielo: Ocorreu um erro ao tentar finalizar o pagamento"
+        authorize_success: "Cielo: transação autorizada com sucesso!"
+        authorize_fail: "Cielo: Autorização negada"
+        authorize_rescue: "Cielo: Ocorreu um erro ao tentar autorizar o pagamento"
+        capture_success: "Cielo: Pagamento capturado com sucesso!"
+        capture_rescue: "Cielo: Ocorreu um erro ao tentar capturar o pagamento"
+        void_success: "Cielo: Pagamento cancelado com sucesso"
+        void_rescue: "Cielo: Ocorreu um erro ao tentar cancelar o pagamento"
+        create_rescue: "Cielo: Ocorreu um erro ao tentar criar a transação"
+        invalid_message: "A mensagem enviada é inválida. Verifique as informações e tente novamente."
+        invalid_portions: "Cielo: O número de parcelas é requerido"
+    errors:
+      cielo_card_fail: "O cartão digitado não é suportado. Os tipos de cartões disponíveis são:"
+      cielo_unavailable_credit_card: "O cartão informado não é suportado."
+      invalid_guest_token: "O token informado é inválido!"
+  activerecord:
+    attributes:
+      spree/credit_card:
+        portions: Parcelas

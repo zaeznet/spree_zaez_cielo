@@ -1,0 +1,5 @@
+<!-- insert_before ".cc-type" -->
+<% if payment.portions.present? and payment.portions > 1 %>
+    <span class="portions"><%= Spree.t(:quantity_portions, portions: payment.portions) %></span>
+    <br />
+<% end %>

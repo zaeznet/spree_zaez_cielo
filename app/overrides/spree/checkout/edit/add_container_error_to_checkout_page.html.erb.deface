@@ -1,0 +1,3 @@
+<!-- insert_top "#checkout" -->
+<div id="errorExplanationCielo" class="alert alert-danger" data-hook="error-cielo" style="display: none">
+</div>
