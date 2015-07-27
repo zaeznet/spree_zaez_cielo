@@ -31,6 +31,10 @@ Spree::CieloConfig[:token] = 'asd-123'
 
 See all settings in /lib/spree/cielo_configuration.rb.
 
+#### Atention
+
+For return url in debt card, it's used the setting SITE URL in general settings. So fill this field for complete success of debt cards.
+
 Funcionalities
 -------
 
