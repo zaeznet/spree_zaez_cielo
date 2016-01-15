@@ -24,7 +24,7 @@ module Spree
       }
 
       if source.gateway_customer_profile_id.present?
-        params = {token: source.gateway_customer_profile_id}
+        params = { token: CGI.escape(source.gateway_customer_profile_id) }
       elsif Spree::CieloConfig.generate_token
         params = generate_token source
 
@@ -77,7 +77,7 @@ module Spree
       }
 
       if source.gateway_customer_profile_id.present?
-        params = { token: source.gateway_customer_profile_id }
+        params = { token: CGI.escape(source.gateway_customer_profile_id) }
       elsif Spree::CieloConfig.generate_token
         params = generate_token source
 
