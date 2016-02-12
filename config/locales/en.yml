@@ -30,6 +30,7 @@ en:
     cielo_amex: American Express
     cielo_american_express: American Express
     cielo_jcb: JCB
+    cielo_aura: Aura
     cielo_portions: "%{times}x of %{value}"
     cielo_without_tax: without tax.
     cielo_with_tax: with tax.

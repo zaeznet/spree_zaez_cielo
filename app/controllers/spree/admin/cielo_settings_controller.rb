@@ -2,7 +2,7 @@ class Spree::Admin::CieloSettingsController < Spree::Admin::BaseController
 
   def edit
     @config = Spree::CieloConfiguration.new
-    @credit_cards = [:visa, :master, :diners, :discover, :elo, :amex, :jcb]
+    @credit_cards = [:visa, :master, :diners, :discover, :elo, :amex, :jcb, :aura]
     @debt_cards = [:visa, :master]
   end
 

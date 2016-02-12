@@ -9,6 +9,7 @@ module Spree
       if params[:credit_card_id].present?
         credit_card = Spree::CreditCard.find params[:credit_card_id]
         @cc_type = credit_card.cc_type
+        @cc_type = 'diners' if @cc_type == 'diners_club'
         @cc_type = 'amex' if @cc_type == 'american_express'
         @cc_type = 'master' if @cc_type == 'mastercard'
       else

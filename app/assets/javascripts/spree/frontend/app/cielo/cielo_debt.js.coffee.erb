@@ -13,6 +13,7 @@ class window.CieloDebt
     $('#cielo_debt_number').on 'input', @setCreditCard
     $('#cielo_debt_authorize').click (e) => @authorizePayment(e)
     $('div[data-hook="checkout_payment_step"] input[type="radio"]').click => do @verifySaveButtonVisibility
+    do @setIconsPath
 
   # Antes de fazer a requisicao a Cielo
   # verifica se o usuario inseriu um codigo de desconto
@@ -103,12 +104,27 @@ class window.CieloDebt
     $('#cielo_unrecognized').hide()
     type = $.payment.cardType($('#cielo_debt_number').val())
     type = 'master' if type == 'mastercard'
+    type = 'diners' if type == 'dinersclub'
     if type == null
       $('#cielo_debt_unrecognized').show()
     else
-      $('#cielo_debt_message').html("<img src='/assets/credit_cards/icons/#{type}.png' class='pull-right' />")
+      $('#cielo_debt_message').html("<img src='#{Spree.icons_debt[type]}' class='pull-right' />")
       $('#cielo_debt_unrecognized').hide()
       $('#cielo_debt_cc_type').val(type)
+
+  # Salva o caminho dos icones
+  # (para evitar problemas e producao)
+  setIconsPath: ->
+    Spree.icons_debt = {
+      visa: '<%= asset_url 'credit_cards/icons/visa.png' %>',
+      master: '<%= asset_url 'credit_cards/icons/master.png' %>',
+      amex: '<%= asset_url 'credit_cards/icons/amex.png' %>',
+      diners: '<%= asset_url 'credit_cards/icons/diners.png' %>',
+      elo: '<%= asset_url 'credit_cards/icons/elo.png' %>',
+      jcb: '<%= asset_url 'credit_cards/icons/jcb.png' %>',
+      discover: '<%= asset_url 'credit_cards/icons/discover.png' %>',
+      aura: '<%= asset_url 'credit_cards/icons/aura.png' %>'
+    }
 
   # Verifica se deve esconder/exibir o botao de confirmacao do pagamento
   # Para debito, o pagamento e criado apenas apos a autenticacao,
