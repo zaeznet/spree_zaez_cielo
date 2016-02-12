@@ -2,6 +2,7 @@ module Spree
   class CieloDebtController < Spree::StoreController
 
     before_filter :set_credit_card, only: [:confirm]
+    skip_before_action :verify_authenticity_token, only: [:confirm]
 
     def create
       if current_order.guest_token != params[:guest_token]

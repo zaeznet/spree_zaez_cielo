@@ -30,6 +30,7 @@ pt-BR:
     cielo_amex: American Express
     cielo_american_express: American Express
     cielo_jcb: JCB
+    cielo_aura: Aura
     cielo_portions: "%{times}x de %{value}"
     cielo_without_tax: sem juros.
     cielo_with_tax: com juros.

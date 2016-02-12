@@ -156,6 +156,7 @@ module Spree
       cc_type = type
       cc_type = 'mastercard' if cc_type == 'master'
       cc_type = 'amex' if cc_type == 'american_express'
+      cc_type = 'diners' if cc_type == 'diners_club'
       cc_type
     end
 

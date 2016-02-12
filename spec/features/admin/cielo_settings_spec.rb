@@ -80,7 +80,7 @@ describe 'Cielo Settings', type: :feature do
       end
     end
 
-    [:visa, :master, :diners, :elo, :discover, :amex, :jcb].each do |card|
+    [:visa, :master, :diners, :elo, :discover, :amex, :jcb, :aura].each do |card|
       it "can edit #{card} credit card", js: true do
         find(:css, "#credit_#{card}_state").set true
         fill_in "#{card}_portion", with: 12
