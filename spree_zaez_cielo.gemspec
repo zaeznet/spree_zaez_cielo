@@ -2,7 +2,7 @@
 Gem::Specification.new do |s|
   s.platform    = Gem::Platform::RUBY
   s.name        = 'spree_zaez_cielo'
-  s.version     = '3.0.1'
+  s.version     = '3.0.5'
   s.summary     = 'Adds Cielo as a Payment Method to Spree Commerce'
   s.description = s.summary
   s.required_ruby_version = '>= 2.0.0'
@@ -35,4 +35,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'guard-bundler'
   s.add_development_dependency 'guard-rspec'
   s.add_development_dependency 'guard-shell'
+  s.add_development_dependency 'http_logger'
 end

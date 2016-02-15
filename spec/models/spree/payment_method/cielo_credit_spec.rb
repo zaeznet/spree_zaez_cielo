@@ -37,9 +37,7 @@ describe Spree::PaymentMethod::CieloCredit do
 
       it 'should create the token and save on credit card when the setting is enable' do
         Spree::CieloConfig.generate_token = true
-        token_response = JSON.parse File.read('spec/fixtures/cielo_returns/token_success.json'), symbolize_names: true
-        allow_any_instance_of(Cielo::Token).to receive(:create!).and_return(token_response)
-        stub_cielo_request :create!, 'authorize_success'
+        stub_cielo_request :create!, 'authorize_token_success'
 
         response = cielo.authorize(1000, credit_card, gateway_options)
         expect(response.success?).to be true
@@ -47,15 +45,11 @@ describe Spree::PaymentMethod::CieloCredit do
         expect(credit_card.gateway_customer_profile_id).to eq '2ta/YqYaeyolf2NHkBWO8grPqZE44j3PvRAQxVQQGgE='
       end
 
-      it 'should not storage the token if the request fail' do
+      it 'should not storage the token if the request is unauthorized' do
         Spree::CieloConfig.generate_token = true
-        token_response = JSON.parse File.read('spec/fixtures/cielo_returns/capture_error.json'), symbolize_names: true
-        allow_any_instance_of(Cielo::Token).to receive(:create!).and_return(token_response)
-        stub_cielo_request :create!, 'authorize_success'
+        stub_cielo_request :create!, 'authorize_error'
 
-        response = cielo.authorize(1000, credit_card, gateway_options)
-        expect(response.success?).to be true
-        expect(response.message).to eq 'Cielo: transaction authorized successfully'
+        cielo.authorize(1000, credit_card, gateway_options)
         expect(credit_card.gateway_customer_profile_id).to be_nil
       end
     end
@@ -77,7 +71,7 @@ describe Spree::PaymentMethod::CieloCredit do
         expect(response.message).to eq 'Cielo: The message is invalid. Verify the information and try again.'
       end
 
-      it 'should rturn an invalid response when occurs an error on authorization' do
+      it 'should return an invalid response when occurs an error on authorization' do
         allow_any_instance_of(Cielo::Transaction).to receive(:create!).and_return(nil)
 
         response = cielo.authorize(1000, credit_card, gateway_options)
@@ -114,9 +108,7 @@ describe Spree::PaymentMethod::CieloCredit do
 
       it 'should create the token and save on credit card when the setting is enable' do
         Spree::CieloConfig.generate_token = true
-        token_response = JSON.parse File.read('spec/fixtures/cielo_returns/token_success.json'), symbolize_names: true
-        allow_any_instance_of(Cielo::Token).to receive(:create!).and_return(token_response)
-        stub_cielo_request :create!, 'purchase_success'
+        stub_cielo_request :create!, 'purchase_token_success'
 
         response = cielo.purchase(1000, credit_card, gateway_options)
         expect(response.success?).to be true
@@ -124,15 +116,11 @@ describe Spree::PaymentMethod::CieloCredit do
         expect(credit_card.gateway_customer_profile_id).to eq '2ta/YqYaeyolf2NHkBWO8grPqZE44j3PvRAQxVQQGgE='
       end
 
-      it 'should not storage the token if the request fail' do
+      it 'should not storage the token if the request is unauthorized' do
         Spree::CieloConfig.generate_token = true
-        token_response = JSON.parse File.read('spec/fixtures/cielo_returns/capture_error.json'), symbolize_names: true
-        allow_any_instance_of(Cielo::Token).to receive(:create!).and_return(token_response)
-        stub_cielo_request :create!, 'purchase_success'
+        stub_cielo_request :create!, 'authorize_error'
 
-        response = cielo.purchase(1000, credit_card, gateway_options)
-        expect(response.success?).to be true
-        expect(response.message).to eq 'Cielo: transaction purchased successfully'
+        cielo.purchase(1000, credit_card, gateway_options)
         expect(credit_card.gateway_customer_profile_id).to be_nil
       end
     end

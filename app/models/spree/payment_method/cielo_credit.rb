@@ -23,19 +23,8 @@ module Spree
           capturar: 'true'
       }
 
-      if source.gateway_customer_profile_id.present?
+      if source.gateway_customer_profile_id?
         params = { token: CGI.escape(source.gateway_customer_profile_id) }
-      elsif Spree::CieloConfig.generate_token
-        params = generate_token source
-
-        if params[:token].nil?
-          params = {
-              cartao_numero: source.number,
-              cartao_validade: "#{source.year}#{source.month}",
-              cartao_seguranca: source.verification_value,
-              cartao_portador: source.name
-          }
-        end
       else
         params = {
             cartao_numero: source.number,
@@ -43,19 +32,28 @@ module Spree
             cartao_seguranca: source.verification_value,
             cartao_portador: source.name
         }
+
+        if Spree::CieloConfig.generate_token
+          params[:'gerar-token'] = 'true'
+        end
       end
+
       transaction_params = mount_params(total_value, source, params.merge!(default_params))
 
       transaction = Cielo::Transaction.new
-      ret = transaction.create!(transaction_params, :store)
+      response = transaction.create!(transaction_params, :store)
 
-      if ret[:transacao][:status] == '6'
-        ActiveMerchant::Billing::Response.new(true, Spree.t('cielo.messages.purchase_success'), {}, authorization: ret[:transacao][:tid])
+      if response[:transacao][:status] == '6'
+        if Spree::CieloConfig.generate_token
+          storage_token source, response[:transacao]
+        end
+
+        ActiveMerchant::Billing::Response.new(true, Spree.t('cielo.messages.purchase_success'), {}, authorization: response[:transacao][:tid])
       else
-        ActiveMerchant::Billing::Response.new(false, Spree.t('cielo.messages.purchase_fail'), {}, authorization: ret[:transacao][:tid])
+        ActiveMerchant::Billing::Response.new(false, Spree.t('cielo.messages.purchase_fail'), {}, authorization: response[:transacao][:tid])
       end
     rescue
-      verify_error 'purchase', ret
+      verify_error 'purchase', response
     end
 
     # Authorizes the payment to Cielo
@@ -76,19 +74,8 @@ module Spree
           capturar: 'false'
       }
 
-      if source.gateway_customer_profile_id.present?
+      if source.gateway_customer_profile_id?
         params = { token: CGI.escape(source.gateway_customer_profile_id) }
-      elsif Spree::CieloConfig.generate_token
-        params = generate_token source
-
-        if params[:token].nil?
-          params = {
-              cartao_numero: source.number,
-              cartao_validade: "#{source.year}#{source.month}",
-              cartao_seguranca: source.verification_value,
-              cartao_portador: source.name
-          }
-        end
       else
         params = {
             cartao_numero: source.number,
@@ -96,19 +83,28 @@ module Spree
             cartao_seguranca: source.verification_value,
             cartao_portador: source.name
         }
+
+        if Spree::CieloConfig.generate_token
+          params[:'gerar-token'] = 'true'
+        end
       end
+
       transaction_params = mount_params(total_value, source, params.merge!(default_params))
 
       transaction = Cielo::Transaction.new
-      ret = transaction.create!(transaction_params, :store)
+      response = transaction.create!(transaction_params, :store)
 
-      if ret[:transacao][:status] == '4'
-        ActiveMerchant::Billing::Response.new(true, Spree.t('cielo.messages.authorize_success'), {}, authorization: ret[:transacao][:tid])
+      if response[:transacao][:status] == '4'
+        if Spree::CieloConfig.generate_token
+          storage_token source, response[:transacao]
+        end
+
+        ActiveMerchant::Billing::Response.new(true, Spree.t('cielo.messages.authorize_success'), {}, authorization: response[:transacao][:tid])
       else
-        ActiveMerchant::Billing::Response.new(false, Spree.t('cielo.messages.authorize_fail'), {}, authorization: ret[:transacao][:tid])
+        ActiveMerchant::Billing::Response.new(false, Spree.t('cielo.messages.authorize_fail'), {}, authorization: response[:transacao][:tid])
       end
     rescue
-      verify_error 'authorize', ret
+      verify_error 'authorize', response
     end
 
     # Captures the payment
@@ -160,30 +156,20 @@ module Spree
       cc_type
     end
 
-    # Generate and storage the token in the source object
+    # Storage the token generated in request
     #
     # @author Isabella Santos
     #
     # @param credit_card [Spree::CreditCard]
+    # @param response [Hash]
     #
-    # @return [Hash]
-    #
-    def generate_token credit_card
-      token_request = Cielo::Token.new
-      token_parameters = {
-          cartao_numero: credit_card.number,
-          cartao_validade: "#{credit_card.year}#{credit_card.month}",
-          cartao_portador: credit_card.name
-      }
-      response = token_request.create! token_parameters, :store
-
-      if response[:'retorno-token'][:token][:'dados-token'][:'codigo-token']
-        token = response[:'retorno-token'][:token][:'dados-token'][:'codigo-token']
+    def storage_token credit_card, response
+      if response[:token][:'dados-token'][:status] == '1' and response[:token][:'dados-token'][:'codigo-token']
+        token = response[:token][:'dados-token'][:'codigo-token']
         credit_card.update_attributes(gateway_customer_profile_id: token)
-        return { token: token }
       end
     rescue
-      {}
+      false
     end
 
     # Returns the params to Cielo::Transaction
