@@ -42,9 +42,7 @@ describe 'Checkout with Cielo Credit Payment Method', type: :feature do
     it 'should create a token and use in next transactions', js: true do
       Spree::CieloConfig.generate_token = true
 
-      response = JSON.parse File.read('spec/fixtures/cielo_returns/token_success.json'), symbolize_names: true
-      allow_any_instance_of(Cielo::Token).to receive(:create!).and_return(response)
-      stub_cielo_request
+      stub_cielo_request 'authorize_token_success'
 
       navigate_to_payment
       fill_credit_card_data
