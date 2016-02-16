@@ -16,7 +16,7 @@ module Spree
         return ActiveMerchant::Billing::Response.new(false, Spree.t('cielo.messages.invalid_portions'), {}, {})
       end
 
-      total_value = update_payment_amount amount, source, gateway_options
+      total_value = update_payment_amount amount, gateway_options
       total_value.delete!('.')
       default_params = {
           parcelas: gateway_options[:portions],
@@ -67,7 +67,7 @@ module Spree
         return ActiveMerchant::Billing::Response.new(false, Spree.t('cielo.messages.invalid_portions'), {}, {})
       end
 
-      total_value = update_payment_amount amount, source, gateway_options
+      total_value = update_payment_amount amount, gateway_options
       total_value.delete!('.')
       default_params = {
           parcelas: gateway_options[:portions],
@@ -213,17 +213,18 @@ module Spree
     # @author Isabella Santos
     #
     # @param amount [Integer]
-    # @param source [Spree::CreditCard]
     # @param gateway_options [Hash]
     #
     # @return [Integer]
     #
-    def update_payment_amount(amount, source, gateway_options)
+    def update_payment_amount(amount, gateway_options)
       if gateway_options[:portions] > 1
-        portion_value = Spree::CieloConfig.calculate_portion_value amount, gateway_options[:portions]
+        order_number, payment_number = gateway_options[:order_id].split('-')
+        order = Spree::Order.friendly.find order_number
+        portion_value = Spree::CieloConfig.calculate_portion_value order, gateway_options[:portions]
         total_value = sprintf('%0.2f', portion_value * gateway_options[:portions])
 
-        payment = Spree::Payment.find_by number: gateway_options[:order_id].split('-')[1]
+        payment = Spree::Payment.friendly.find payment_number
         payment.update_attributes(amount: total_value)
 
         total_value

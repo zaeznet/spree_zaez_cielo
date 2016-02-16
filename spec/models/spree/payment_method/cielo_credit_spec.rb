@@ -4,8 +4,9 @@ describe Spree::PaymentMethod::CieloCredit do
 
   let(:cielo) { FactoryGirl.build(:cielo_credit_payment_method) }
   let!(:payment) { create(:cielo_credit_payment, source: credit_card) }
+  let(:order) { create(:order) }
   let(:credit_card) { FactoryGirl.build(:credit_card_cielo) }
-  let(:gateway_options) { {order_id: "test-#{payment.number}", portions: 2} }
+  let(:gateway_options) { {order_id: "#{order.number}-#{payment.number}", portions: 2} }
 
   before do
     payment

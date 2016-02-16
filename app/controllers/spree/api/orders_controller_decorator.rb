@@ -21,7 +21,7 @@ module Spree
         # set the prefix if exists
         @prefix = params[:prefix].present? ? params[:prefix] : nil
 
-        @portions = Spree::CieloConfig.calculate_portions @order.total, @cc_type
+        @portions = Spree::CieloConfig.calculate_portions @order, @cc_type
         @portions.each do |item|
           item[:total] = Spree::Money.new(item[:total], {currency: @order.currency}).to_html
           item[:value] = Spree::Money.new(item[:value], {currency: @order.currency}).to_html
