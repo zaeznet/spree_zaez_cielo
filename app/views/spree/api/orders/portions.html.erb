@@ -8,7 +8,9 @@
     <% end %>
     <%= tag(:br) %>
 <% end %>
-<% if @show_tax_value == true %>
-    <%= tag(:br) %>
-    <%= content_tag :span, Spree.t(:cielo_tax_message, tax: @tax), style: 'font-size: smaller;' %>
-<% end %>
+<div data-hook="cielo_tax_info">
+  <% if @show_tax_value == true %>
+      <%= tag(:br) %>
+      <%= content_tag :span, Spree.t(:cielo_tax_message, tax: @tax), style: 'font-size: smaller;' %>
+  <% end %>
+</div>

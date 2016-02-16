@@ -20,24 +20,27 @@ describe Spree::CieloConfiguration do
 
   context 'calculate a single portion' do
     it 'should calculate without tax' do
+      order = create(:order, total: 100.0)
       config.portion_without_tax = 10
-      portion_value = config.calculate_portion_value 100.0, 4
+      portion_value = config.calculate_portion_value order, 4
       expect(portion_value).to eq 25.0
     end
 
     it 'should calculate with tax' do
+      order = create(:order, total: 100.0)
       config.portion_without_tax = 1
       config.tax_value = '5.00'
-      portion_value = config.calculate_portion_value 100.0, 4
+      portion_value = config.calculate_portion_value order, 4
       expect(portion_value).to eq 30.387656250000006
     end
   end
 
   context 'calculating some portions' do
     it 'should calculate portions without tax' do
+      order = create(:order, total: 100.0)
       config.portion_without_tax = 10
       config.credit_cards = {'visa' => 5}
-      portions = config.calculate_portions 100.0, 'visa'
+      portions = config.calculate_portions order, 'visa'
 
       expect(portions[0]).to eq({portion: 1, value: 100.0, total: 100.0, tax_message: :cielo_without_tax})
       expect(portions[1]).to eq({portion: 2, value: 50.0, total: 100.0, tax_message: :cielo_without_tax})
@@ -47,20 +50,22 @@ describe Spree::CieloConfiguration do
     end
 
     it 'should return the number of portions respecting the minimum value' do
+      order = create(:order, total: 50.0)
       config.credit_cards = {'master' => 10}
       config.minimum_value = 20
       config.portion_without_tax = 12
-      portions = config.calculate_portions 50.0, 'master'
+      portions = config.calculate_portions order, 'master'
 
       expect(portions.size).to eq 2
     end
 
     it 'should calculate portions with tax' do
+      order = create(:order, total: 100.0)
       config.credit_cards = {'master' => 6}
       config.minimum_value = 10
       config.portion_without_tax = 1
       config.tax_value = '1'
-      portions = config.calculate_portions 100.0, 'master'
+      portions = config.calculate_portions order, 'master'
 
       expect(portions[0]).to eq({portion: 1, value: 100.0, total: 100.0, tax_message: :cielo_without_tax})
       expect(portions[1]).to eq({portion: 2, value: 51.005, total: 102.01, tax_message: :cielo_with_tax})

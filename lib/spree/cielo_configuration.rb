@@ -14,14 +14,13 @@ class Spree::CieloConfiguration < Spree::Preferences::Configuration
   # Calculates the portions of credit card type
   # based on Cielo configuration
   #
-  # @param amount [Float]
-  #   amount of the order
+  # @param order [Spree::Order]
   # @param cc_type [String]
-  #   name of the credit card
   #
   # @return [Array]
   #
-  def calculate_portions(amount, cc_type)
+  def calculate_portions(order, cc_type)
+    amount = order.total.to_f
     ret = []
     if preferred_credit_cards.has_key? cc_type
       portions_number = preferred_credit_cards[cc_type]
@@ -51,14 +50,13 @@ class Spree::CieloConfiguration < Spree::Preferences::Configuration
   # Calculate the value of the portion based on Cielo configuration
   # (verify if the portion has tax)
   #
-  # @param amount [Float]
-  #   total amount of the order
+  # @param order [Spree::Order]
   # @param portion [Integer]
-  #   value of the portion
   #
   # @return [Float]
   #
-  def calculate_portion_value(amount, portion)
+  def calculate_portion_value(order, portion)
+    amount = order.total.to_f
     amount = amount / 100 if amount.is_a? Integer
     tax = preferred_tax_value.to_f
 
