@@ -50,6 +50,8 @@ pt-BR:
         capture_rescue: "Cielo: Ocorreu um erro ao tentar capturar o pagamento"
         void_success: "Cielo: Pagamento cancelado com sucesso"
         void_rescue: "Cielo: Ocorreu um erro ao tentar cancelar o pagamento"
+        cancel_success: "Cielo: Pagamento cancelado com sucesso"
+        cancel_rescue: "Cielo: Ocorreu um erro ao tentar cancelar o pagamento"
         create_rescue: "Cielo: Ocorreu um erro ao tentar criar a transação"
         invalid_message: "A mensagem enviada é inválida. Verifique as informações e tente novamente."
         invalid_portions: "Cielo: O número de parcelas é requerido"

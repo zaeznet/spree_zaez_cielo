@@ -155,6 +155,30 @@ module Spree
       verify_error 'void', ret
     end
 
+    # Cancel the payment
+    #
+    # @author Isabella Santos
+    #
+    # @return [ActiveMerchant::Billing::Response]
+    #
+    def cancel(response_code)
+      transaction = Cielo::Transaction.new
+      response = transaction.verify!(response_code)
+
+      if response[:transacao][:status] == '4' or response[:transacao][:status] == '6'
+        response_cancel = transaction.cancel!(response_code)
+        if response_cancel[:transacao].present?
+          ActiveMerchant::Billing::Response.new(true, Spree.t('cielo.messages.cancel_success'), {}, authorization: response_cancel[:transacao][:tid])
+        else
+          verify_error 'cancel', response_cancel
+        end
+      else
+        ActiveMerchant::Billing::Response.new(true, Spree.t('cielo.messages.cancel_success'), {}, authorization: response[:transacao][:tid])
+      end
+    rescue
+      verify_error 'cancel', response
+    end
+
     def auto_capture?
       true
     end

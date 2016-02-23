@@ -215,6 +215,52 @@ describe Spree::PaymentMethod::CieloCredit do
     end
   end
 
+  context 'cancel' do
+
+    context 'successfull canceled' do
+
+      it 'when transaction is authorized or captured' do
+        stub_cielo_request :verify!, 'authorize_success'
+        stub_cielo_request :cancel!, 'void_success'
+
+        response = cielo.cancel('123')
+        expect(response.success?).to be true
+        expect(response.message).to eq 'Cielo: Canceled successfully'
+      end
+
+      it 'when transaction is created' do
+        stub_cielo_request :verify!, 'create_success'
+        stub_cielo_request :cancel!, 'void_success'
+
+        response = cielo.cancel('123')
+        expect(response.success?).to be true
+        expect(response.message).to eq 'Cielo: Canceled successfully'
+      end
+
+    end
+
+    context 'error' do
+
+      it 'should return an invalid response when the request is invalid' do
+        stub_cielo_request :verify!, 'authorize_success'
+        stub_cielo_request :cancel!, 'void_error'
+
+        response = cielo.cancel('123')
+        expect(response.success?).to be false
+        expect(response.message).to eq "Cielo: 041 - O status 'Nao autorizada' não permite cancelamento."
+      end
+
+      it 'should return an invalid response when occurs an error on void' do
+        stub_cielo_request :verify!, 'authorize_success'
+        allow_any_instance_of(Cielo::Transaction).to receive(:cancel!).and_return(nil)
+
+        response = cielo.cancel('123')
+        expect(response.success?).to be false
+        expect(response.message).to eq 'Cielo: Error when try cancel'
+      end
+    end
+  end
+
   def stub_cielo_request(method, filename)
     cielo_response = JSON.parse File.read("spec/fixtures/cielo_returns/#{filename}.json"), symbolize_names: true
     allow_any_instance_of(Cielo::Transaction).to receive(method).and_return(cielo_response)
