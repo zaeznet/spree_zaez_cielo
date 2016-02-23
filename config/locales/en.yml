@@ -50,6 +50,8 @@ en:
         capture_rescue: "Cielo: Error when try capture"
         void_success: "Cielo: Voided successfully"
         void_rescue: "Cielo: Error when try void"
+        cancel_success: "Cielo: Canceled successfully"
+        cancel_rescue: "Cielo: Error when try cancel"
         create_rescue: "Cielo: Error when try create the transaction"
         invalid_message: "Cielo: The message is invalid. Verify the information and try again."
         invalid_portions: "Cielo: The number of portions is required"
