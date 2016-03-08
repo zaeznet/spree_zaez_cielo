@@ -26,9 +26,11 @@ module Spree
       if source.gateway_customer_profile_id?
         params = { token: CGI.escape(source.gateway_customer_profile_id) }
       else
+        year = source.year.to_s.rjust(4, '0')
+        month = source.month.to_s.rjust(2, '0')
         params = {
             cartao_numero: source.number,
-            cartao_validade: "#{source.year}#{source.month}",
+            cartao_validade: "#{year}#{month}",
             cartao_seguranca: source.verification_value,
             cartao_portador: source.name
         }
@@ -77,9 +79,11 @@ module Spree
       if source.gateway_customer_profile_id?
         params = { token: CGI.escape(source.gateway_customer_profile_id) }
       else
+        year = source.year.to_s.rjust(4, '0')
+        month = source.month.to_s.rjust(2, '0')
         params = {
             cartao_numero: source.number,
-            cartao_validade: "#{source.year}#{source.month}",
+            cartao_validade: "#{year}#{month}",
             cartao_seguranca: source.verification_value,
             cartao_portador: source.name
         }
