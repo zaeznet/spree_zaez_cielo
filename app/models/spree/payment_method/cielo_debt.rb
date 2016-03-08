@@ -24,6 +24,9 @@ module Spree
       return_url = Spree::Store.current.url
       return_url << Spree::Core::Engine.routes.url_helpers.cielo_debt_confirm_path(source.id, self.id)
 
+      year = source.year.to_s.rjust(4, '0')
+      month = source.month.to_s.rjust(2, '0')
+
       params = { numero: source.id,
         valor: amount,
         moeda: '986',
@@ -31,7 +34,7 @@ module Spree
         parcelas: '1',
         cartao_numero: source.number,
         :'url-retorno' => return_url,
-        cartao_validade: "#{source.year}#{source.month}",
+        cartao_validade: "#{year}#{month}",
         cartao_seguranca: source.verification_value,
         cartao_portador: source.name,
         autorizar: '2',
