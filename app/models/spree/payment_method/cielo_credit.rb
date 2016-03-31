@@ -11,13 +11,17 @@ module Spree
     #
     # @return [ActiveMerchant::Billing::Response]
     #
-    def purchase(amount, source, gateway_options)
+    def purchase(_amount, source, gateway_options)
       if gateway_options[:portions].nil?
         return ActiveMerchant::Billing::Response.new(false, Spree.t('cielo.messages.invalid_portions'), {}, {})
       end
 
-      total_value = update_payment_amount amount, gateway_options
+      order_number = gateway_options[:order_id].split('-').first
+      order = Spree::Order.friendly.find order_number
+      portion_value = Spree::CieloConfig.calculate_portion_value order, gateway_options[:portions]
+      total_value = sprintf('%0.2f', portion_value * gateway_options[:portions])
       total_value.delete!('.')
+
       default_params = {
           parcelas: gateway_options[:portions],
           capturar: 'true'
@@ -50,6 +54,9 @@ module Spree
           storage_token source, response[:transacao]
         end
 
+        # Salva o valor do pagamento (e pedido) com o juros (se houver)
+        update_payment_amount gateway_options
+
         ActiveMerchant::Billing::Response.new(true, Spree.t('cielo.messages.purchase_success'), {}, authorization: response[:transacao][:tid])
       else
         ActiveMerchant::Billing::Response.new(false, Spree.t('cielo.messages.purchase_fail'), {}, authorization: response[:transacao][:tid])
@@ -64,13 +71,17 @@ module Spree
     #
     # @return [ActiveMerchant::Billing::Response]
     #
-    def authorize(amount, source, gateway_options)
+    def authorize(_amount, source, gateway_options)
       if gateway_options[:portions].nil?
         return ActiveMerchant::Billing::Response.new(false, Spree.t('cielo.messages.invalid_portions'), {}, {})
       end
 
-      total_value = update_payment_amount amount, gateway_options
+      order_number = gateway_options[:order_id].split('-').first
+      order = Spree::Order.friendly.find order_number
+      portion_value = Spree::CieloConfig.calculate_portion_value order, gateway_options[:portions]
+      total_value = sprintf('%0.2f', portion_value * gateway_options[:portions])
       total_value.delete!('.')
+
       default_params = {
           parcelas: gateway_options[:portions],
           capturar: 'false'
@@ -102,6 +113,9 @@ module Spree
         if Spree::CieloConfig.generate_token
           storage_token source, response[:transacao]
         end
+
+        # Salva o valor do pagamento (e pedido) com o juros (se houver)
+        update_payment_amount gateway_options
 
         ActiveMerchant::Billing::Response.new(true, Spree.t('cielo.messages.authorize_success'), {}, authorization: response[:transacao][:tid])
       else
@@ -240,24 +254,26 @@ module Spree
     #
     # @author Isabella Santos
     #
-    # @param amount [Integer]
     # @param gateway_options [Hash]
     #
     # @return [Integer]
     #
-    def update_payment_amount(amount, gateway_options)
-      if gateway_options[:portions] > 1
-        order_number, payment_number = gateway_options[:order_id].split('-')
-        order = Spree::Order.friendly.find order_number
-        portion_value = Spree::CieloConfig.calculate_portion_value order, gateway_options[:portions]
-        total_value = sprintf('%0.2f', portion_value * gateway_options[:portions])
+    def update_payment_amount(gateway_options)
+      order_number, payment_number = gateway_options[:order_id].split('-')
+      order = Spree::Order.friendly.find order_number
+      total = Spree::CieloConfig.calculate_portion_value(order, gateway_options[:portions]) * gateway_options[:portions]
+
+      if total > order.total
+        Spree::Adjustment.create(adjustable: order,
+                                 amount: (total - order.total),
+                                 label: Spree.t(:cielo_adjustment_tax),
+                                 eligible: true,
+                                 order: order)
+        order.updater.update
 
         payment = Spree::Payment.friendly.find payment_number
-        payment.update_attributes(amount: total_value)
+        payment.update_attributes(amount: order.total)
 
-        total_value
-      else
-        amount.to_s
       end
     end
 

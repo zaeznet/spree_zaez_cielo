@@ -59,6 +59,7 @@ en:
       cielo_card_fail: "The card is not supported. The available cards are:"
       cielo_unavailable_credit_card: "The credit card is not supported."
       invalid_guest_token: "The guest token passed is invalid!"
+    cielo_adjustment_tax: Credit Card Tax
   activerecord:
     attributes:
       spree/payment:
