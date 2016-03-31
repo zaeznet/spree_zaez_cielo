@@ -59,6 +59,7 @@ pt-BR:
       cielo_card_fail: "O cartão digitado não é suportado. Os tipos de cartões disponíveis são:"
       cielo_unavailable_credit_card: "O cartão informado não é suportado."
       invalid_guest_token: "O token informado é inválido!"
+    cielo_adjustment_tax: "Juros Cartão de Crédito"
   activerecord:
     attributes:
       spree/credit_card:
